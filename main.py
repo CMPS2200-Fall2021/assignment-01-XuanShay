@@ -5,12 +5,22 @@ See assignment-01.pdf for details.
 # no imports needed.
 
 def foo(x):
-    ### TODO
-    pass
+    if x<=1:
+        return x
+    else:
+        return foo(x-1)+foo(x-2)
 
 def longest_run(mylist, key):
-    ### TODO
-    pass
+    longest_count = 0
+    temp_count = 0
+    for i in mylist:
+        if i == key:
+            temp_count += 1
+            if temp_count > longest_count:
+                longest_count = temp_count
+        else:
+            temp_count = 0
+    return longest_count
 
 
 class Result:
@@ -27,8 +37,41 @@ class Result:
     
     
 def longest_run_recursive(mylist, key):
-    ### TODO
-    pass
+    if len(mylist) == 1:
+        if mylist[0] == key:
+            res = Result(1,1,1,True)
+            return res
+        else:
+            res = Result(0,0,0,False)
+            return res
+    else:
+        mid = len(mylist)//2
+        left = longest_run_recursive(mylist[:mid],key)
+        right = longest_run_recursive(mylist[mid:],key)
+        lr = left.right_size
+        rl = right.left_size
+        size = 0
+        
+        if lr!=0 and rl!=0:
+            size = rl + lr
+            if size > left.longest_size and size > right.longest_size:
+                if left.is_entire_range and right.is_entire_range:
+                    res = Result(size,size,size,True)
+                    return res
+                elif left.is_entire_range:
+                    res = Result(size,right.right_size,size,False)
+                    return res
+                elif right.is_entire_range:
+                    res = Result(left.left_size,size,size,False)
+                    return res
+                else:
+                    res = Result(left.left_size,right.right_size,size,False)
+                    return res
+        else:
+               size = max(left.longest_size,right.longest_size)
+               res = Result(left.left_size,right.right_size,size,False)
+               return res
+                            
 
 ## Feel free to add your own tests here.
 def test_longest_run():
